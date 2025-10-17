@@ -1,0 +1,82 @@
+:root {
+	--bg: #ffffff;
+	--surface: #ffffff;
+	--text: #0b1020;
+	--muted: #5b657a;
+	--accent: #4cc9f0;
+	--accent-2: #b5179e;
+}
+
+* { box-sizing: border-box; }
+
+html, body { height: 100%; }
+
+body {
+	margin: 0;
+	font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+	color: var(--text);
+	background: var(--bg);
+}
+
+.container {
+	max-width: 920px;
+	margin: 0 auto;
+	padding: 32px 20px 60px;
+}
+
+h1 { margin: 0 0 4px; font-size: 28px; font-weight: 700; }
+.subtitle { margin: 0 0 18px; color: var(--muted); }
+
+.card {
+	background: #ffffff;
+	border: 1px solid rgba(0,0,0,0.08);
+	border-radius: 12px;
+	padding: 18px;
+	margin: 16px 0;
+	box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+}
+
+.grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+	gap: 14px;
+}
+
+.field { display: grid; gap: 8px; }
+.field span { color: var(--muted); font-size: 13px; }
+.field input[type="number"], .field input[type="text"] {
+	width: 100%;
+	padding: 10px 12px;
+	border-radius: 8px;
+	border: 1px solid rgba(255,255,255,0.12);
+	background: var(--surface);
+	color: var(--text);
+	outline: none;
+	transition: border-color .15s ease;
+}
+.field input[type="number"]:focus { border-color: var(--accent); }
+
+.field--range input[type="range"] { width: 100%; }
+
+.results {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+	gap: 12px;
+	margin-top: 8px;
+}
+
+.result {
+	background: rgba(0,0,0,0.02);
+	border: 1px solid rgba(0,0,0,0.08);
+	border-radius: 10px;
+	padding: 14px;
+}
+.result__label { color: var(--muted); font-size: 12px; }
+.result__value { font-size: 24px; font-weight: 700; margin-top: 6px; color: #111111; }
+
+.formula { margin-top: 10px; }
+.formula summary { cursor: pointer; color: var(--accent); }
+
+.footer { margin-top: 24px; color: var(--muted); font-size: 13px; }
+
+

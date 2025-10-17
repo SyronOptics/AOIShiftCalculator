@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>AOI Shift Simulator — Bandpass Filter</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="container">
+      <h1>AOI Shift Simulator</h1>
+      <p class="subtitle">Bandpass filter center wavelength shift with angle of incidence</p>
+
+      <section class="card">
+        <h2>Inputs</h2>
+        <div class="grid">
+          <label class="field">
+            <span>Center wavelength λ<sub>0</sub> (nm)</span>
+            <input id="lambda0" type="number" inputmode="decimal" step="0.1" min="0" value="532">
+          </label>
+
+          <label class="field">
+            <span>Effective refractive index n<sub>eff</sub></span>
+            <input id="neff" type="number" inputmode="decimal" step="0.001" min="1" value="1.523">
+          </label>
+
+          <label class="field">
+            <span>Angle of incidence θ (deg)</span>
+            <input id="theta" type="number" inputmode="decimal" step="0.1" min="0" max="85" value="0">
+          </label>
+
+          <label class="field field--range">
+            <span>θ slider</span>
+            <input id="thetaRange" type="range" step="0.1" min="0" max="85" value="0">
+          </label>
+        </div>
+        <p class="note">Incident medium is air: n<sub>0</sub> = 1.000 (fixed).</p>
+      </section>
+
+      <section class="card">
+        <h2>Results</h2>
+        <div class="results">
+          <div class="result">
+            <div class="result__label">Shifted wavelength λ<sub>θ</sub> (nm)</div>
+            <div id="lambdaShifted" class="result__value">—</div>
+          </div>
+          <div class="result">
+            <div class="result__label">Shift (nm)</div>
+            <div id="deltaLambda" class="result__value">—</div>
+          </div>
+          <div class="result">
+            <div class="result__label">Shift (%)</div>
+            <div id="percentShift" class="result__value">—</div>
+          </div>
+        </div>
+
+        <details class="formula">
+          <summary>Formula</summary>
+          <p>λ<sub>θ</sub> = λ<sub>0</sub> · √( 1 − ( n<sub>0</sub> / n<sub>eff</sub> )² · sin² θ )</p>
+        </details>
+      </section>
+
+      <footer class="footer">
+        <span>All right reserved by Team SyronOptics</span>
+      </footer>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+  </html>
+
+
