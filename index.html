@@ -3,65 +3,162 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>AOI Shift Simulator — Bandpass Filter</title>
+    <title>AOI Shift Concept Calculator — Bandpass Filter</title>
     <link rel="stylesheet" href="styles.css">
   </head>
   <body>
     <main class="container">
-      <h1>AOI Shift Simulator</h1>
-      <p class="subtitle">Bandpass filter center wavelength shift with angle of incidence</p>
+      <h1>AOI Shift Concept Calculator</h1>
+      <p class="subtitle">Estimate bandpass filter center-wavelength shift versus angle of incidence (AOI).</p>
 
-      <section class="card">
+      <section class="card card--inputs">
         <h2>Inputs</h2>
-        <div class="grid">
+        <div class="grid grid--inputs">
           <label class="field">
-            <span>Center wavelength λ<sub>0</sub> (nm)</span>
-            <input id="lambda0" type="number" inputmode="decimal" step="0.1" min="0" value="532">
+            <span>Center wavelength at normal incidence λ<sub>0</sub> (nm)</span>
+            <input id="lambda0" type="number" inputmode="decimal" step="0.1" min="193" max="1940" value="532">
+            <small class="help">Valid range: 193 to 1940 nm.</small>
           </label>
 
-          <label class="field">
+          <label class="field field--wide">
             <span>Effective refractive index n<sub>eff</sub></span>
             <input id="neff" type="number" inputmode="decimal" step="0.001" min="1" value="1.523">
+            <div class="preset-row">
+              <span class="preset-row__label">n<sub>eff</sub> presets (approximate stack types)</span>
+              <select id="neffPreset">
+                <option value="">Custom / manual entry</option>
+                <option value="1.70">1.70 - Lower-index weighted stack (e.g., SiO2 + Al2O3/HfO2)</option>
+                <option value="2.00">2.00 - Balanced dielectric stack (e.g., SiO2 + Ta2O5/Nb2O5)</option>
+                <option value="2.30">2.30 - Higher-index weighted stack (e.g., TiO2-rich + SiO2)</option>
+                <option value="2.50">2.50 - Very high-index effective stack (TiO2-dominant)</option>
+              </select>
+            </div>
+            <small class="help">Typical thin-film effective index is about 1.7 to 2.5.</small>
           </label>
 
           <label class="field">
-            <span>Angle of incidence θ (deg)</span>
+            <span>Angle of incidence, θ (deg)</span>
             <input id="theta" type="number" inputmode="decimal" step="0.1" min="0" max="85" value="0">
+            <small class="help">Use 0 to 85 degrees (collimated-beam approximation).</small>
           </label>
 
           <label class="field field--range">
-            <span>θ slider</span>
+            <span>AOI slider (θ)</span>
             <input id="thetaRange" type="range" step="0.1" min="0" max="85" value="0">
+            <small class="help">Slider control for angle θ from 0 to 85 degrees.</small>
           </label>
         </div>
-        <p class="note">Incident medium is air: n<sub>0</sub> = 1.000 (fixed).</p>
+        <p class="note">Incident medium is fixed to air: n<sub>0</sub> = 1.000.</p>
+        <details class="input-refs">
+          <summary>How to choose n<sub>eff</sub></summary>
+          <p class="equation-note">
+            Use the filter vendor datasheet when available. As a quick starting point, many dielectric interference filters
+            are often approximated in the range n<sub>eff</sub> ≈ 1.7 to 2.5.
+          </p>
+          <ul class="refs refs--compact">
+            <li>
+              <a href="https://www.noc-ltd.com/technical/angular-shift" target="_blank" rel="noopener noreferrer">
+                Northumbria Optical Coatings - Angular Shift (effective index context)
+              </a>
+            </li>
+            <li>
+              <a href="https://alluxa.com/optical-filter-specs/angle-of-incidence-aoi-and-polarization/" target="_blank" rel="noopener noreferrer">
+                Alluxa - AOI and Polarization for Optical Filters
+              </a>
+            </li>
+          </ul>
+        </details>
       </section>
 
       <section class="card">
-        <h2>Results</h2>
+        <h2>Estimated Results</h2>
+        <p class="warn">
+          Conceptual estimate only: values are rounded and should not be used as final specification numbers.
+          For design sign-off, rely on measured AOI data for the actual filter.
+        </p>
         <div class="results">
           <div class="result">
-            <div class="result__label">Shifted wavelength λ<sub>θ</sub> (nm)</div>
+            <div class="result__label">Shifted center wavelength λ<sub>θ</sub> (nm)</div>
             <div id="lambdaShifted" class="result__value">—</div>
           </div>
           <div class="result">
-            <div class="result__label">Shift (nm)</div>
+            <div class="result__label">Wavelength shift Δλ (nm)</div>
             <div id="deltaLambda" class="result__value">—</div>
           </div>
           <div class="result">
-            <div class="result__label">Shift (%)</div>
+            <div class="result__label">Relative shift (%)</div>
             <div id="percentShift" class="result__value">—</div>
           </div>
         </div>
+        <section class="viz" aria-label="AOI conceptual visualization">
+          <h3 class="viz__title">Concept Visuals</h3>
+          <div class="viz__row">
+            <svg id="aoiViz" viewBox="0 0 520 220" role="img" aria-label="Conceptual AOI surface-angle diagram">
+              <defs>
+                <marker id="arrowIncident" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+                  <path d="M0,0 L8,4 L0,8 z" fill="#3b82f6"></path>
+                </marker>
+              </defs>
+              <rect x="0" y="0" width="520" height="220" fill="#fbfdff"></rect>
+              <line x1="40" y1="112" x2="480" y2="112" class="viz__interface"></line>
+              <line x1="260" y1="20" x2="260" y2="204" class="viz__normal"></line>
+              <path id="thetaArcAir" class="viz__arc"></path>
+              <line id="incidentRay" class="viz__ray viz__ray--incident" marker-end="url(#arrowIncident)"></line>
+              <text id="airAngleLabel" x="0" y="0" class="viz__label"></text>
+              <text x="48" y="90" class="viz__region">Air (n₀ = 1.000)</text>
+              <text x="48" y="144" class="viz__region">Filter stack (conceptual boundary)</text>
+              <text id="neffVizLabel" x="48" y="174" class="viz__label viz__label--muted"></text>
+            </svg>
+            <svg id="transViz" viewBox="0 0 520 220" role="img" aria-label="Conceptual transmission curve shift">
+              <rect x="0" y="0" width="520" height="220" fill="#fbfdff"></rect>
+              <line x1="54" y1="180" x2="486" y2="180" class="viz__axis"></line>
+              <line x1="54" y1="24" x2="54" y2="180" class="viz__axis"></line>
+              <text x="62" y="34" class="viz__label viz__label--muted">Transmission (conceptual)</text>
+              <text x="372" y="200" class="viz__label viz__label--muted">Wavelength</text>
+              <path id="curveBaseline" class="viz__curve viz__curve--baseline"></path>
+              <path id="curveShifted" class="viz__curve viz__curve--shifted"></path>
+              <line id="baselineCenterLine" class="viz__centerline viz__centerline--baseline"></line>
+              <line id="shiftedCenterLine" class="viz__centerline viz__centerline--shifted"></line>
+              <text id="baselineLabel" x="0" y="0" class="viz__label"></text>
+              <text id="shiftedLabel" x="0" y="0" class="viz__label"></text>
+            </svg>
+          </div>
+          <p class="help">Visuals are conceptual only: they show AOI shift behavior, not exact filter transmission.</p>
+        </section>
 
         <details class="formula">
-          <summary>Formula</summary>
-          <p>λ<sub>θ</sub> = λ<sub>0</sub> · √( 1 − ( n<sub>0</sub> / n<sub>eff</sub> )² · sin² θ )</p>
+          <summary>Model and References</summary>
+          <p class="equation">
+            λ<sub>θ</sub> = λ<sub>0</sub> · √( 1 − ( n<sub>0</sub> / n<sub>eff</sub> )<sup>2</sup> · sin<sup>2</sup>θ )
+          </p>
+          <p class="equation-note">
+            Equivalent form when the incident medium is air (n<sub>0</sub> = 1):
+            λ<sub>θ</sub> = λ<sub>0</sub> · √( 1 − sin<sup>2</sup>θ / n<sub>eff</sub><sup>2</sup> )
+          </p>
+          <ul class="formula-list">
+            <li>λ<sub>0</sub>: center wavelength at normal incidence (θ = 0)</li>
+            <li>λ<sub>θ</sub>: shifted center wavelength at incidence angle θ</li>
+            <li>n<sub>eff</sub>: effective refractive index of the filter stack</li>
+            <li>Model assumption: collimated beam and effective-index approximation</li>
+          </ul>
+          <p class="equation-note">References:</p>
+          <ul class="refs">
+            <li>
+              <a href="https://openstax.org/books/university-physics-volume-3/pages/3-4-interference-in-thin-films" target="_blank" rel="noopener noreferrer">
+                OpenStax - Interference in Thin Films
+              </a>
+            </li>
+            <li>
+              <a href="https://www.noc-ltd.com/technical/angular-shift" target="_blank" rel="noopener noreferrer">
+                Northumbria Optical Coatings - Angular Shift
+              </a>
+            </li>
+          </ul>
         </details>
       </section>
 
       <footer class="footer">
-        <span>All right reserved by Team SyronOptics</span>
+        <span>All rights reserved by Team SyronOptics.</span>
       </footer>
     </main>
 
